@@ -1,0 +1,9 @@
+{
+  "name": "kaspernj/peak_flow_php",
+  "description": "PeakFlow integration for PHP",
+  "license": "MIT",
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "^7"
+  }
+}

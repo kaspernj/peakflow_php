@@ -1,0 +1,4 @@
+before_script:
+  - composer install
+script:
+  - xvfb-run bundle exec rspec
