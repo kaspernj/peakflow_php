@@ -1,4 +1,9 @@
 {
+  "autoload": {
+    "classmap": [
+      "src/"
+    ]
+  },
   "name": "kaspernj/peak_flow_php",
   "description": "PeakFlow integration for PHP",
   "license": "MIT",
