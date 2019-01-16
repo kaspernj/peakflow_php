@@ -2,4 +2,4 @@ before_script:
   - apt-get update && apt-get install composer
   - composer install
 script:
-  - xvfb-run bundle exec rspec
+  - ./vendor/bin/phpunit tests/
