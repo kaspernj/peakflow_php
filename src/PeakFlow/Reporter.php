@@ -4,7 +4,19 @@ namespace PeakFlow;
 
 class Reporter {
   function __construct($args) {
-    $this->authToken = $args["authToken"];
+    $this->args = $args;
+  }
+
+  function getAuthToken() {
+    return $this->args["authToken"];
+  }
+
+  function getPeakFlowUrl() {
+    if (array_key_exists("peakFlowUrl", $this->args)) {
+      return $this->args["peakFlowUrl"];
+    } else {
+      return "https://www.peakflow.io/errors/reports";
+    }
   }
 
   function getUrl() {
@@ -33,7 +45,7 @@ class Reporter {
 
   function reportException($exception) {
     $this->report(array(
-      "auth_token" => $this->authToken,
+      "auth_token" => $this->getAuthToken(),
       "error" => array(
         "backtrace" => $exception->getTrace(),
         "error_class" => get_class($exception),
@@ -45,7 +57,6 @@ class Reporter {
   }
 
   function report($data) {
-    $url = "https://www.peakflow.io/errors/reports";
     $options = array(
       "http" => array(
         "header" => "Content-Type: application/x-www-form-urlencoded\r\n",
@@ -54,7 +65,7 @@ class Reporter {
       )
     );
     $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
+    $result = file_get_contents($this->getPeakFlowUrl(), false, $context);
 
     if ($result === false) {
       throw new Exception("Couldn't report the error");
