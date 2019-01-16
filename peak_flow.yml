@@ -1,5 +1,5 @@
 before_script:
-  - apt-get update && apt-get install composer
+  - sudo apt-get update && sudo apt-get install -y composer
   - composer install
 script:
   - ./vendor/bin/phpunit tests/
