@@ -6,7 +6,7 @@ class PeakFlowReporterTest extends TestCase {
   function testReporting() {
     $reporter = new PeakFlow\Reporter(array(
       "authToken" => "TEST_AUTH_TOKEN",
-      "peakFlowUrl" => "http://peakflow.development:18000/errors/reports"
+      "testing" => true
     ));
 
     try {
@@ -14,5 +14,12 @@ class PeakFlowReporterTest extends TestCase {
     } catch(Exception $e) {
       $reporter->reportException($e);
     }
+
+    $reports = $reporter->getReports();
+
+    $this->assertEquals(count($reports), 1);
+    $this->assertEquals($reports[0]["auth_token"], "TEST_AUTH_TOKEN");
+    $this->assertEquals($reports[0]["error"]["error_class"], "RuntimeException");
+    $this->assertEquals($reports[0]["error"]["message"], "Test");
   }
 }
