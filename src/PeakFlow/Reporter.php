@@ -18,6 +18,7 @@ class Reporter {
       "environment" => $_SERVER,
       "error_class" => get_class($exception),
       "file_path" => $exception->getFile(),
+      "line_number" => $exception->getLine(),
       "http_method" => $this->getRequestMethod(),
       "message" => $exception->getMessage(),
       "remote_ip" => $this->getRemoteIP(),
