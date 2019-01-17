@@ -21,5 +21,6 @@ class PeakFlowReporterTest extends TestCase {
     $this->assertEquals($reports[0]["auth_token"], "TEST_AUTH_TOKEN");
     $this->assertEquals($reports[0]["error"]["error_class"], "RuntimeException");
     $this->assertEquals($reports[0]["error"]["message"], "Test");
+    $this->assertEquals(is_array($reports[0]["error"]["backtrace"]), true);
   }
 }

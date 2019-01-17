@@ -60,7 +60,7 @@ class Reporter {
     $this->report(array(
       "auth_token" => $this->getAuthToken(),
       "error" => array(
-        "backtrace" => $exception->getTraceAsString(),
+        "backtrace" => explode("\n", $exception->getTraceAsString()),
         "error_class" => get_class($exception),
         "message" => $exception->getMessage(),
         "url" => $this->getUrl(),
