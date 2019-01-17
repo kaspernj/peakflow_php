@@ -20,8 +20,22 @@ class Reporter {
     }
   }
 
+  function getRemoteIP() {
+    if (array_key_exists("HTTP_X_FORWARDED_FOR", $_SERVER) && $_SERVER["HTTP_X_FORWARDED_FOR"]) {
+      return $_SERVER["HTTP_X_FORWARDED_FOR"];
+    } else if (array_key_exists("REMOTE_ADDR", $_SERVER) && $_SERVER["REMOTE_ADDR"]) {
+      return $_SERVER["REMOTE_ADDR"];
+    }
+  }
+
   function getReports() {
     return $this->reports;
+  }
+
+  function getRequestMethod() {
+    if (array_key_exists("REQUEST_METHOD", $_SERVER)) {
+      return $_SERVER["REQUEST_METHOD"];
+    }
   }
 
   function getUrl() {
@@ -61,8 +75,13 @@ class Reporter {
       "auth_token" => $this->getAuthToken(),
       "error" => array(
         "backtrace" => explode("\n", $exception->getTraceAsString()),
+        "environment" => $_SERVER,
         "error_class" => get_class($exception),
+        "file_path" => $exception->getFile(),
+        "http_method" => $this->getRequestMethod(),
         "message" => $exception->getMessage(),
+        "remote_ip" => $this->getRemoteIP(),
+        "parameters" => array_merge($_GET, $_POST),
         "url" => $this->getUrl(),
         "user_agent" => $this->getUserAgent()
       )
