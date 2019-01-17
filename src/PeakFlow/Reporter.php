@@ -75,9 +75,9 @@ class Reporter {
     } else {
       $options = array(
         "http" => array(
-          "header" => "Content-Type: application/x-www-form-urlencoded\r\n",
+          "header" => "Content-Type: application/json\r\n",
           "method" => "POST",
-          "content" => http_build_query($data)
+          "content" => json_encode($data)
         )
       );
       $context = stream_context_create($options);
