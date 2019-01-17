@@ -12,6 +12,26 @@ class Reporter {
     return $this->args["authToken"];
   }
 
+  function getErrorArray($exception) {
+    $result = array(
+      "backtrace" => explode("\n", $exception->getTraceAsString()),
+      "environment" => $_SERVER,
+      "error_class" => get_class($exception),
+      "file_path" => $exception->getFile(),
+      "http_method" => $this->getRequestMethod(),
+      "message" => $exception->getMessage(),
+      "remote_ip" => $this->getRemoteIP(),
+      "url" => $this->getUrl(),
+      "user_agent" => $this->getUserAgent()
+    );
+
+    if (count($_GET) > 0 || count($_POST) > 0) {
+      $result["parameters"] = array_merge($_GET, $_POST);
+    }
+
+    return $result;
+  }
+
   function getPeakFlowUrl() {
     if (array_key_exists("peakFlowUrl", $this->args)) {
       return $this->args["peakFlowUrl"];
@@ -73,18 +93,7 @@ class Reporter {
   function reportException($exception) {
     $this->report(array(
       "auth_token" => $this->getAuthToken(),
-      "error" => array(
-        "backtrace" => explode("\n", $exception->getTraceAsString()),
-        "environment" => $_SERVER,
-        "error_class" => get_class($exception),
-        "file_path" => $exception->getFile(),
-        "http_method" => $this->getRequestMethod(),
-        "message" => $exception->getMessage(),
-        "remote_ip" => $this->getRemoteIP(),
-        "parameters" => array_merge($_GET, $_POST),
-        "url" => $this->getUrl(),
-        "user_agent" => $this->getUserAgent()
-      )
+      "error" => $this->getErrorArray($exception)
     ));
   }
 
