@@ -91,6 +91,33 @@ class Reporter {
     return false;
   }
 
+  function reportError($err_severity, $err_msg, $err_file, $err_line, array $err_context) {
+    // error was suppressed with the @-operator
+    if (0 === error_reporting()) { return false;}
+
+    try {
+      switch($err_severity) {
+        case E_ERROR: throw new Error ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_WARNING: throw new WarningException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_PARSE: throw new ParseException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_NOTICE: throw new NoticeException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_CORE_ERROR: throw new CoreErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_CORE_WARNING: throw new CoreWarningException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_COMPILE_ERROR: throw new CompileErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_COMPILE_WARNING: throw new CoreWarningException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_USER_ERROR: throw new UserErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_USER_WARNING: throw new UserWarningException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_USER_NOTICE: throw new UserNoticeException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_STRICT: throw new StrictException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_RECOVERABLE_ERROR: throw new RecoverableErrorException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_DEPRECATED: throw new DeprecatedException ($err_msg, 0, $err_severity, $err_file, $err_line);
+        case E_USER_DEPRECATED: throw new UserDeprecatedException ($err_msg, 0, $err_severity, $err_file, $err_line);
+      }
+    } catch (Exception $exception) {
+      $this->reportException($exception);
+    }
+  }
+
   function reportException($exception) {
     $this->report(array(
       "auth_token" => $this->getAuthToken(),
@@ -113,8 +140,30 @@ class Reporter {
       $result = file_get_contents($this->getPeakFlowUrl(), false, $context);
 
       if ($result === false) {
-        throw new Exception("Couldn't report the error");
+        throw new \Exception("Couldn't report the error");
       }
     }
   }
 }
+
+class CustomError extends \Exception {
+  function __construct($err_msg, $error_code, $err_severity, $err_file, $err_line) {
+    parent::__construct($err_msg);
+  }
+}
+
+class Error extends CustomError {}
+class WarningException extends CustomError {}
+class ParseException extends CustomError {}
+class NoticeException extends CustomError {}
+class CoreErrorException extends CustomError {}
+class CoreWarningException extends CustomError {}
+class CompileErrorException extends CustomError {}
+class CompileWarningException extends CustomError {}
+class UserErrorException extends CustomError {}
+class UserWarningException extends CustomError {}
+class UserNoticeException extends CustomError {}
+class StrictException extends CustomError {}
+class RecoverableErrorException extends CustomError {}
+class DeprecatedException extends CustomError {}
+class UserDeprecatedException extends CustomError {}
