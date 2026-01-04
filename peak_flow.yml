@@ -1,6 +1,5 @@
 before_script:
   - sudo apt-get update && sudo apt-get install -y composer php-mbstring php-xml
-  - sudo composer self-update --2
   - composer install
 script:
   - ./vendor/bin/phpunit tests/
